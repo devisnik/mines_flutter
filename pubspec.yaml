@@ -43,6 +43,16 @@ flutter:
    - assets/images/classic_image_13.png
    - assets/images/classic_image_14.png
    - assets/images/classic_image_15.png
+   - assets/images/counter_0.gif
+   - assets/images/counter_1.gif
+   - assets/images/counter_2.gif
+   - assets/images/counter_3.gif
+   - assets/images/counter_4.gif
+   - assets/images/counter_5.gif
+   - assets/images/counter_6.gif
+   - assets/images/counter_7.gif
+   - assets/images/counter_8.gif
+   - assets/images/counter_9.gif
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
