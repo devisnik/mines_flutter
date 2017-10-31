@@ -56,8 +56,17 @@ public class MainActivity extends FlutterActivity {
 
   private Object gameToState(IGame game) {
     IBoard board = game.getBoard();
+    ArrayList<Object> state = boardToState(board);
+    HashMap<String, Object> map = new HashMap<>();
+    map.put("board", state);
+    map.put("running", game.isRunning());
+    map.put("flags", game.getBombCount() - game.getBoard().getFlagCount());
+    return map;
+  }
+
+  private ArrayList<Object> boardToState(final IBoard board) {
     Point size = board.getDimension();
-    ArrayList<Object> state = new ArrayList<>();
+    ArrayList<Object> state = new ArrayList<>(size.x);
     for (int row = 0; row < size.x; row++) {
       int[] line = new int[size.y];
       for(int column=0; column < size.y; column++) {
@@ -65,10 +74,6 @@ public class MainActivity extends FlutterActivity {
       }
       state.add(line);
     }
-    HashMap<String, Object> map = new HashMap<>();
-    map.put("board", state);
-    map.put("running", game.isRunning());
-    map.put("flags", game.getBombCount() - game.getBoard().getFlagCount());
-    return map;
+    return state;
   }
 }
