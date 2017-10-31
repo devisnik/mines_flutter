@@ -261,19 +261,20 @@ class Counter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = new Size(20.0, 35.0);
     return new Row(
       children: <Widget>[
         new Digit(
           value: (value / 100).floor() % 10,
-          size: new Size(20.0, 35.0),
+          size: size,
         ),
         new Digit(
           value: (value / 10).floor() % 10,
-          size: new Size(20.0, 35.0),
+          size: size,
         ),
         new Digit(
           value: value % 10,
-          size: new Size(20.0, 35.0),
+          size: size,
         ),
       ],
     );
