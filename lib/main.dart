@@ -34,14 +34,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState() {
-    _startGame(12, 10, 15);
+    _startGame(13, 10, 15);
   }
 
   static const platform = const MethodChannel('devisnik.de/mines');
 
+
   void _startTimer() {
-    new Timer.periodic(new Duration(seconds: 1), _incTimer);
+    timer = new Timer.periodic(new Duration(seconds: 1), _incTimer);
     _isRunning = true;
+  }
+
+  void _stopTimer() {
+    timer.cancel();
+    _isRunning = false;
   }
 
   void _incTimer(Timer timer) {
@@ -66,36 +72,45 @@ class _MyHomePageState extends State<MyHomePage> {
   int _flagsToSet = 30;
   int _seconds = 0;
   bool _isRunning = false;
+  Timer timer;
 
   Future<Null> _openField(int row, int column) async {
-    List<List<int>> newState = await platform.invokeMethod("click", {
+    Map newState = await platform.invokeMethod("click", {
       "row": row,
       "column": column
     });
-    if (!_isRunning) _startTimer();
+    if (!_isRunning && newState["running"]) _startTimer();
+    if (_isRunning && !newState["running"]) _stopTimer();
     setState(() {
-      _state = newState;
+      _state = newState["board"];
+      _flagsToSet = newState["flags"];
     });
   }
 
   Future<Null> _flagField(int row, int column) async {
-    List<List<int>> newState = await platform.invokeMethod("longclick", {
+    Map newState = await platform.invokeMethod("longclick", {
       "row": row,
       "column": column
     });
+    if (!_isRunning && newState["running"]) _startTimer();
+    if (_isRunning && !newState["running"]) _stopTimer();
     setState(() {
-      _state = newState;
+      _state = newState["board"];
+      _flagsToSet = newState["flags"];
     });
   }
 
   Future<Null> _startGame(int rows, int columns, int bombs) async {
-    List<List<int>> newState = await platform.invokeMethod("start", {
+    Map newState = await platform.invokeMethod("start", {
       "rows": rows,
       "columns": columns,
       "bombs": bombs
     });
+    if (!_isRunning && newState["running"]) _startTimer();
+    if (_isRunning && !newState["running"]) _stopTimer();
     setState(() {
-      _state = newState;
+      _state = newState["board"];
+      _flagsToSet = newState["flags"];
     });
   }
 
@@ -250,15 +265,15 @@ class Counter extends StatelessWidget {
       children: <Widget>[
         new Digit(
           value: (value / 100).floor() % 10,
-          size: new Size(26.0, 46.0),
+          size: new Size(20.0, 35.0),
         ),
         new Digit(
           value: (value / 10).floor() % 10,
-          size: new Size(26.0, 46.0),
+          size: new Size(20.0, 35.0),
         ),
         new Digit(
           value: value % 10,
-          size: new Size(26.0, 46.0),
+          size: new Size(20.0, 35.0),
         ),
       ],
     );

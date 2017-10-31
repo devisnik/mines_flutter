@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
@@ -64,6 +65,10 @@ public class MainActivity extends FlutterActivity {
       }
       state.add(line);
     }
-    return state;
+    HashMap<String, Object> map = new HashMap<>();
+    map.put("board", state);
+    map.put("running", game.isRunning());
+    map.put("flags", game.getBombCount() - game.getBoard().getFlagCount());
+    return map;
   }
 }
