@@ -33,7 +33,14 @@ public class MainActivity extends FlutterActivity {
           int row = methodCall.argument("row");
           int column = methodCall.argument("column");
           Log.i("mines-native", "received click (" + row + "," + column + ")");
-          game.onRequestOpen(game.getBoard().getField(row,column));
+          game.onRequestFlag(game.getBoard().getField(row, column));
+          result.success(gameToState(game));
+        }
+        else if (methodCall.method.equals("longclick")) {
+          int row = methodCall.argument("row");
+          int column = methodCall.argument("column");
+          Log.i("mines-native", "received click (" + row + "," + column + ")");
+          game.onRequestOpen(game.getBoard().getField(row, column));
           result.success(gameToState(game));
         }
         else {

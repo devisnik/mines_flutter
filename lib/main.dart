@@ -74,6 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<Null> _flagField(int row, int column) async {
+    List<List<int>> newState = await platform.invokeMethod("longclick", {"row": row, "column": column});
+    setState(() {
+      _state = newState;
+    });
+  }
+
   Future<Null> _startGame() async {
     List<List<int>> newState = await platform.invokeMethod("start");
     setState(() {
@@ -109,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   .size
                   .width,
               onClick: _openField,
+              onLongClick: _flagField,
             ),
           ),
         ],
@@ -122,13 +130,15 @@ class Tile extends StatelessWidget {
   final int id;
   final double size;
   final VoidCallback onClick;
+  final VoidCallback onLongClick;
 
-  const Tile({Key key, this.id, this.size, this.onClick}) : super(key: key);
+  const Tile({Key key, this.id, this.size, this.onClick, this.onLongClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return new InkWell(
         onTap: onClick,
+        onLongPress: onLongClick,
         child: new Image.asset(
           "assets/images/classic_image_${id < 10 ? "0$id" : "$id"}.png",
           width: size,
@@ -145,8 +155,9 @@ class TileRow extends StatelessWidget {
   final List<int> ids;
   final double width;
   final ColumnCallback onClick;
+  final ColumnCallback onLongClick;
 
-  const TileRow({Key key, this.ids, this.width, this.onClick})
+  const TileRow({Key key, this.ids, this.width, this.onClick, this.onLongClick})
       : super(key: key);
 
   @override
@@ -158,6 +169,7 @@ class TileRow extends StatelessWidget {
               id: id,
               size: width / ids.length,
               onClick: () => onClick(index),
+              onLongClick: () => onLongClick(index),
             )
         )
     );
@@ -174,8 +186,9 @@ class Board extends StatelessWidget {
   final List<List<int>> ids;
   final double size;
   final RowColumnCallback onClick;
+  final RowColumnCallback onLongClick;
 
-  const Board({this.ids, this.size, this.onClick});
+  const Board({this.ids, this.size, this.onClick, this.onLongClick});
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +199,7 @@ class Board extends StatelessWidget {
               ids: values,
               width: size,
               onClick: (columnIndex) => onClick(rowIndex, columnIndex),
+              onLongClick: (columnIndex) => onLongClick(rowIndex, columnIndex),
             )
         )
     );
