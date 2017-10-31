@@ -46,6 +46,8 @@ flutter {
 }
 
 dependencies {
+    compile project(':model')
+
     androidTestCompile 'com.android.support:support-annotations:25.4.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(new MyApp());
@@ -32,6 +33,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  _MyHomePageState() {
+    _startGame();
+  }
+
+  static const platform = const MethodChannel('devisnik.de/mines');
+
   void _startTimer() {
     new Timer.periodic(new Duration(seconds: 1), _incTimer);
     _isRunning = true;
@@ -60,10 +67,17 @@ class _MyHomePageState extends State<MyHomePage> {
   int _seconds = 0;
   bool _isRunning = false;
 
-  void _openField(int row, int column) {
+  Future<Null> _openField(int row, int column) async {
+    List<List<int>> newState = await platform.invokeMethod("click", {"row": row, "column": column});
     setState(() {
-      if (!_isRunning) _startTimer();
-      _state[row][column] = column % 8 + 1;
+      _state = newState;
+    });
+  }
+
+  Future<Null> _startGame() async {
+    List<List<int>> newState = await platform.invokeMethod("start");
+    setState(() {
+      _state = newState;
     });
   }
 
