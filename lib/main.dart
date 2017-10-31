@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState() {
-    _startGame();
+    _startGame(12, 10, 15);
   }
 
   static const platform = const MethodChannel('devisnik.de/mines');
@@ -68,21 +68,32 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isRunning = false;
 
   Future<Null> _openField(int row, int column) async {
-    List<List<int>> newState = await platform.invokeMethod("click", {"row": row, "column": column});
+    List<List<int>> newState = await platform.invokeMethod("click", {
+      "row": row,
+      "column": column
+    });
+    if (!_isRunning) _startTimer();
     setState(() {
       _state = newState;
     });
   }
 
   Future<Null> _flagField(int row, int column) async {
-    List<List<int>> newState = await platform.invokeMethod("longclick", {"row": row, "column": column});
+    List<List<int>> newState = await platform.invokeMethod("longclick", {
+      "row": row,
+      "column": column
+    });
     setState(() {
       _state = newState;
     });
   }
 
-  Future<Null> _startGame() async {
-    List<List<int>> newState = await platform.invokeMethod("start");
+  Future<Null> _startGame(int rows, int columns, int bombs) async {
+    List<List<int>> newState = await platform.invokeMethod("start", {
+      "rows": rows,
+      "columns": columns,
+      "bombs": bombs
+    });
     setState(() {
       _state = newState;
     });

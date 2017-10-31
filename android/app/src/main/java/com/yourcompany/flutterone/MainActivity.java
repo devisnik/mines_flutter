@@ -26,7 +26,10 @@ public class MainActivity extends FlutterActivity {
       @Override
       public void onMethodCall(final MethodCall methodCall, final MethodChannel.Result result) {
         if (methodCall.method.equals("start")) {
-          game = GameFactory.create(10, 10, 10);
+          int rows = methodCall.argument("rows");
+          int columns = methodCall.argument("columns");
+          int bombs = methodCall.argument("bombs");
+          game = GameFactory.create(rows, columns, bombs);
           result.success(gameToState(game));
         }
         else if (methodCall.method.equals("click")) {
