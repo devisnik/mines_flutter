@@ -1,5 +1,5 @@
-name: flutter_one
-description: A new Flutter project.
+name: mines_flutter
+description: A Flutter Minesweeper.
 
 dependencies:
   flutter:
