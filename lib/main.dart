@@ -169,6 +169,7 @@ class Tile extends StatelessWidget {
           "assets/images/classic_image_${id < 10 ? "0$id" : "$id"}.png",
           width: size,
           height: size,
+          gaplessPlayback: true, //to avoid image flickering
         )
     );
   }
@@ -249,6 +250,7 @@ class Digit extends StatelessWidget {
       fit: BoxFit.fill,
       width: size.width,
       height: size.height,
+      gaplessPlayback: true,
     );
   }
 }
