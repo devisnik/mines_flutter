@@ -162,7 +162,7 @@ class Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new InkWell(
+    return new GestureDetector(
         onTap: onClick,
         onLongPress: onLongClick,
         child: new Image.asset(
