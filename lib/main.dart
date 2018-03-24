@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
           primarySwatch: Colors.red,
           brightness: Brightness.light,
-          canvasColor: Colors.grey
+          canvasColor: Colors.white
       ),
       home: new MyHomePage(title: 'Mines'),
     );
@@ -56,18 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  List<List<int>> _state = [
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-    [10, 10, 10, 10, 10, 10, 10, 10],
-  ];
+  List<List<int>> _state = [];
 
   int _flagsToSet = 30;
   int _seconds = 0;
@@ -75,10 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer timer;
 
   Future<Null> _openField(int row, int column) async {
+    print("open-start: " + new DateTime.now().toString());
     Map newState = await platform.invokeMethod("click", {
       "row": row,
       "column": column
     });
+    print("open-receive: " + new DateTime.now().toString());
     if (!_isRunning && newState["running"]) _startTimer();
     if (_isRunning && !newState["running"]) _stopTimer();
     setState(() {
@@ -88,10 +79,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Null> _flagField(int row, int column) async {
+    print("flag-start: " + new DateTime.now().toString());
     Map newState = await platform.invokeMethod("longclick", {
       "row": row,
       "column": column
     });
+    print("flag-receive: " + new DateTime.now().toString());
     if (!_isRunning && newState["running"]) _startTimer();
     if (_isRunning && !newState["running"]) _stopTimer();
     setState(() {
@@ -126,25 +119,34 @@ class _MyHomePageState extends State<MyHomePage> {
           new Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              new Counter(
-                value: _flagsToSet,
+              new RepaintBoundary.wrap(
+                  new Counter(
+                    value: _flagsToSet,
+                  ),
+                  0
               ),
-              new Counter(
-                value: _seconds,
+              new RepaintBoundary.wrap(
+                  new Counter(
+                    value: _seconds,
+                  ),
+                  1
               ),
             ],
           ),
-          new Center(
-            child: new Board(
-              ids: _state,
-              size: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              onClick: _openField,
-              onLongClick: _flagField,
-            ),
-          ),
+          new RepaintBoundary.wrap(
+              new Center(
+                child: new Board(
+                  ids: _state,
+                  size: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  onClick: _openField,
+                  onLongClick: _flagField,
+                ),
+              ),
+              2
+          )
         ],
       ),
     );
@@ -184,8 +186,7 @@ class TileRow extends StatelessWidget {
   final ColumnCallback onClick;
   final ColumnCallback onLongClick;
 
-  const TileRow({Key key, this.ids, this.width, this.onClick, this.onLongClick})
-      : super(key: key);
+  const TileRow({Key key, this.ids, this.width, this.onClick, this.onLongClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
