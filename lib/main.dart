@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState() {
-    _startGame(13, 10, 15);
+    _newGame(13, 10, 15);
   }
 
   static const platform = const MethodChannel('devisnik.de/mines');
@@ -53,6 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incTimer(Timer timer) {
     setState(() {
       _seconds++;
+    });
+  }
+
+  void _resetTimer() {
+    setState(() {
+      _seconds = 0;
     });
   }
 
@@ -93,7 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<Null> _startGame(int rows, int columns, int bombs) async {
+  Future<Null> _newGame(int rows, int columns, int bombs) async {
+    if (_isRunning) {
+      _stopTimer();
+    }
+    _resetTimer();
     Map newState = await platform.invokeMethod("start", {
       "rows": rows,
       "columns": columns,
@@ -112,6 +122,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.add_circle),
+            onPressed: () {
+              _newGame(13, 10, 15);
+            }
+          )
+        ],
       ),
       body: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
