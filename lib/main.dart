@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<List<int>> _state = [];
+  List<List<int>> _matrix = [];
 
   int _flagsToSet = 30;
   int _seconds = 0;
@@ -71,31 +72,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Null> _openField(int row, int column) async {
     print("open-start: " + new DateTime.now().toString());
-    Map newState = await platform.invokeMethod("click", {
-      "row": row,
-      "column": column
-    });
-    print("open-receive: " + new DateTime.now().toString());
-    if (!_isRunning && newState["running"]) _startTimer();
-    if (_isRunning && !newState["running"]) _stopTimer();
+//    Map newState = await platform.invokeMethod("click", {
+//      "row": row,
+//      "column": column
+//    });
+//    print("open-receive: " + new DateTime.now().toString());
+//    if (!_isRunning && newState["running"]) _startTimer();
+//    if (_isRunning && !newState["running"]) _stopTimer();
+    _matrix[row][column] = _matrix[row][column] == 10 ? 0 : 10;
     setState(() {
-      _state = newState["board"];
-      _flagsToSet = newState["flags"];
+      _state = _matrix;
+//      _flagsToSet = newState["flags"];
     });
   }
 
   Future<Null> _flagField(int row, int column) async {
     print("flag-start: " + new DateTime.now().toString());
-    Map newState = await platform.invokeMethod("longclick", {
-      "row": row,
-      "column": column
-    });
-    print("flag-receive: " + new DateTime.now().toString());
-    if (!_isRunning && newState["running"]) _startTimer();
-    if (_isRunning && !newState["running"]) _stopTimer();
+//    Map newState = await platform.invokeMethod("longclick", {
+//      "row": row,
+//      "column": column
+//    });
+//    print("flag-receive: " + new DateTime.now().toString());
+//    if (!_isRunning) _startTimer();
+//    if (_isRunning) _stopTimer();
+
+    _matrix[row][column] = _matrix[row][column] == 10 ? 0 : 10;
     setState(() {
-      _state = newState["board"];
-      _flagsToSet = newState["flags"];
+      _state = _matrix;
+//      _flagsToSet = newState["flags"];
     });
   }
 
@@ -104,16 +108,25 @@ class _MyHomePageState extends State<MyHomePage> {
       _stopTimer();
     }
     _resetTimer();
-    Map newState = await platform.invokeMethod("start", {
-      "rows": rows,
-      "columns": columns,
-      "bombs": bombs
-    });
-    if (!_isRunning && newState["running"]) _startTimer();
-    if (_isRunning && !newState["running"]) _stopTimer();
+//    Map newState = await platform.invokeMethod("start", {
+//      "rows": rows,
+//      "columns": columns,
+//      "bombs": bombs
+//    });
+    if (!_isRunning) _startTimer();
+
+    _matrix = new List<List<int>>(rows);
+    for (var i = 0; i < rows; i++) {
+      List<int> list = new List<int>(columns);
+      for (var j = 0; j < columns; j++) {
+        list[j] = 10;
+      }
+      _matrix[i] = list;
+    }
+
     setState(() {
-      _state = newState["board"];
-      _flagsToSet = newState["flags"];
+      _state = _matrix;
+//      _flagsToSet = newState["flags"];
     });
   }
 
