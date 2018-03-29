@@ -6,8 +6,7 @@ class _Tile extends StatelessWidget {
   final VoidCallback onClick;
   final VoidCallback onLongClick;
 
-  const _Tile({Key key, this.id, this.size, this.onClick, this.onLongClick})
-      : super(key: key);
+  const _Tile({this.id, this.size, this.onClick, this.onLongClick});
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +30,7 @@ class _TileRow extends StatelessWidget {
   final ColumnCallback onClick;
   final ColumnCallback onLongClick;
 
-  const _TileRow(
-      {Key key, this.ids, this.width, this.onClick, this.onLongClick})
-      : super(key: key);
+  const _TileRow({this.ids, this.width, this.onClick, this.onLongClick});
 
   @override
   Widget build(BuildContext context) {

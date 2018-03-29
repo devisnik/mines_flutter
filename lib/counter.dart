@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class _Digit extends StatelessWidget {
-  const _Digit({Key key, this.value, this.size}) : super(key: key);
+  const _Digit({this.value, this.size});
 
   final int value;
   final Size size;
