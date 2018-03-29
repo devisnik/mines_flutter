@@ -1,6 +1,8 @@
-# flutter_one
+# Mines Flutter
 
-A new Flutter project.
+A minesweeper app implemented in Flutter.
+
+Uses a java model for the game logic, so only runs on Android for now.
 
 ## Getting Started
 
