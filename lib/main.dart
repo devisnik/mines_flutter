@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+
 import 'model.dart';
 
 void main() {
@@ -7,7 +9,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -15,8 +16,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
           primarySwatch: Colors.red,
           brightness: Brightness.light,
-          canvasColor: Colors.white
-      ),
+          canvasColor: Colors.white),
       home: new MyHomePage(title: 'Mines'),
     );
   }
@@ -34,7 +34,6 @@ class MyHomePage extends StatefulWidget {
 typedef Future<GameState> Action();
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final Engine engine = new Engine.native();
 
   List<List<int>> _state = [];
@@ -102,11 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
         title: new Text(widget.title),
         actions: <Widget>[
           new IconButton(
-            icon: new Icon(Icons.add_circle),
-            onPressed: () {
-              _newGame(13, 10, 15);
-            }
-          )
+              icon: new Icon(Icons.add_circle),
+              onPressed: () {
+                _newGame(13, 10, 15);
+              })
         ],
       ),
       body: new Column(
@@ -119,30 +117,24 @@ class _MyHomePageState extends State<MyHomePage> {
                   new Counter(
                     value: _flagsToSet,
                   ),
-                  0
-              ),
+                  0),
               new RepaintBoundary.wrap(
                   new Counter(
                     value: _seconds,
                   ),
-                  1
-              ),
+                  1),
             ],
           ),
           new RepaintBoundary.wrap(
               new Center(
                 child: new Board(
                   ids: _state,
-                  size: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  size: MediaQuery.of(context).size.width,
                   onLongClick: _longClick,
                   onClick: _click,
                 ),
               ),
-              2
-          )
+              2)
         ],
       ),
     );
@@ -150,13 +142,13 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Tile extends StatelessWidget {
-
   final int id;
   final double size;
   final VoidCallback onClick;
   final VoidCallback onLongClick;
 
-  const Tile({Key key, this.id, this.size, this.onClick, this.onLongClick}) : super(key: key);
+  const Tile({Key key, this.id, this.size, this.onClick, this.onLongClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -168,45 +160,42 @@ class Tile extends StatelessWidget {
           width: size,
           height: size,
           gaplessPlayback: true, //to avoid image flickering
-        )
-    );
+        ));
   }
 }
 
 typedef void ColumnCallback(int);
 
 class TileRow extends StatelessWidget {
-
   final List<int> ids;
   final double width;
   final ColumnCallback onClick;
   final ColumnCallback onLongClick;
 
-  const TileRow({Key key, this.ids, this.width, this.onClick, this.onLongClick}) : super(key: key);
+  const TileRow({Key key, this.ids, this.width, this.onClick, this.onLongClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> tiles = [];
-    ids.asMap().forEach((index, id) =>
-        tiles.add(
-            new Tile(
-              id: id,
-              size: width / ids.length,
-              onClick: () => onClick(index),
-              onLongClick: () => onLongClick(index),
-            )
-        )
-    );
     return new Row(
-        children: tiles
-    );
+        children: ids
+            .asMap()
+            .map((index, id) => new MapEntry(
+                index,
+                new Tile(
+                  id: id,
+                  size: width / ids.length,
+                  onClick: () => onClick(index),
+                  onLongClick: () => onLongClick(index),
+                )))
+            .values
+            .toList(growable: false));
   }
 }
 
 typedef void RowColumnCallback(int row, int column);
 
 class Board extends StatelessWidget {
-
   final List<List<int>> ids;
   final double size;
   final RowColumnCallback onClick;
@@ -216,25 +205,24 @@ class Board extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<TileRow> rows = [];
-    ids.asMap().forEach((rowIndex, values) =>
-        rows.add(
-            new TileRow(
-              ids: values,
-              width: size,
-              onClick: (columnIndex) => onClick(rowIndex, columnIndex),
-              onLongClick: (columnIndex) => onLongClick(rowIndex, columnIndex),
-            )
-        )
-    );
     return new Column(
-        children: rows
-    );
+        children: ids
+            .asMap()
+            .map((rowIndex, values) => new MapEntry(
+                rowIndex,
+                new TileRow(
+                  ids: values,
+                  width: size,
+                  onClick: (columnIndex) => onClick(rowIndex, columnIndex),
+                  onLongClick: (columnIndex) =>
+                      onLongClick(rowIndex, columnIndex),
+                )))
+            .values
+            .toList(growable: false));
   }
 }
 
 class Digit extends StatelessWidget {
-
   const Digit({Key key, this.value, this.size}) : super(key: key);
 
   final int value;
@@ -253,7 +241,6 @@ class Digit extends StatelessWidget {
 }
 
 class Counter extends StatelessWidget {
-
   const Counter({Key key, this.value}) : super(key: key);
 
   final int value;
