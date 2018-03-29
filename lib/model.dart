@@ -9,15 +9,6 @@ class GameState {
   final bool isRunning;
 
   const GameState(this.matrix, this.availableFlags, this.isRunning);
-
-}
-
-abstract class Engine {
-  GameState click(int row, int column);
-
-  GameState longClick(int row, int column);
-
-  GameState newGame(int rows, int columns, int bombs);
 }
 
 class NativeEngine {
@@ -33,7 +24,7 @@ class NativeEngine {
     return new GameState(newState["board"], newState["flags"], newState["running"]);
   }
 
-  Future<GameState> flagField(int row, int column) async {
+  Future<GameState> click(int row, int column) async {
     Map newState = await platform.invokeMethod("click", {
       "row": row,
       "column": column
@@ -41,7 +32,7 @@ class NativeEngine {
     return new GameState(newState["board"], newState["flags"], newState["running"]);
   }
 
-  Future<GameState> openField(int row, int column) async {
+  Future<GameState> longClick(int row, int column) async {
     Map newState = await platform.invokeMethod("longclick", {
       "row": row,
       "column": column

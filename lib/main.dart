@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'model.dart';
 
 void main() {
@@ -38,12 +37,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final NativeEngine engine = new NativeEngine();
 
+  List<List<int>> _state = [];
+  int _flagsToSet = 0;
+  int _seconds = 0;
+  bool _isRunning = false;
+  Timer timer;
+
   _MyHomePageState() {
     _newGame(13, 10, 15);
   }
-
-  static const platform = const MethodChannel('devisnik.de/mines');
-
 
   void _startTimer() {
     timer = new Timer.periodic(new Duration(seconds: 1), _incTimer);
@@ -67,22 +69,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  List<List<int>> _state = [];
-
-  int _flagsToSet = 30;
-  int _seconds = 0;
-  bool _isRunning = false;
-  Timer timer;
-
-  _openField(int row, int column) async {
-    _updateState(() => engine.openField(row, column));
+  void _longClick(int row, int column) async {
+    _updateState(() => engine.longClick(row, column));
   }
 
-  _flagField(int row, int column) async {
-    _updateState(() => engine.flagField(row, column));
+  void _click(int row, int column) async {
+    _updateState(() => engine.click(row, column));
   }
 
-  _newGame(int rows, int columns, int bombs) async {
+  void _newGame(int rows, int columns, int bombs) async {
     if (_isRunning) {
       _stopTimer();
     }
@@ -142,8 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       .of(context)
                       .size
                       .width,
-                  onLongClick: _openField,
-                  onClick: _flagField,
+                  onLongClick: _longClick,
+                  onClick: _click,
                 ),
               ),
               2
