@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'model.dart';
 
 void main() {
   runApp(new MyApp());
@@ -31,7 +32,11 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
+typedef Future<GameState> Action();
+
 class _MyHomePageState extends State<MyHomePage> {
+
+  final NativeEngine engine = new NativeEngine();
 
   _MyHomePageState() {
     _newGame(13, 10, 15);
@@ -71,31 +76,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Null> _openField(int row, int column) async {
     print("open-start: " + new DateTime.now().toString());
-    Map newState = await platform.invokeMethod("click", {
-      "row": row,
-      "column": column
-    });
+    GameState gameState = await engine.openField(row, column);
     print("open-receive: " + new DateTime.now().toString());
-    if (!_isRunning && newState["running"]) _startTimer();
-    if (_isRunning && !newState["running"]) _stopTimer();
+    if (!_isRunning && gameState.isRunning) _startTimer();
+    if (_isRunning && !gameState.isRunning) _stopTimer();
     setState(() {
-      _state = newState["board"];
-      _flagsToSet = newState["flags"];
+      _state = gameState.matrix;
+      _flagsToSet = gameState.availableFlags;
     });
   }
 
   Future<Null> _flagField(int row, int column) async {
     print("flag-start: " + new DateTime.now().toString());
-    Map newState = await platform.invokeMethod("longclick", {
-      "row": row,
-      "column": column
-    });
+    GameState gameState = await engine.flagField(row, column);
     print("flag-receive: " + new DateTime.now().toString());
-    if (!_isRunning && newState["running"]) _startTimer();
-    if (_isRunning && !newState["running"]) _stopTimer();
+    if (!_isRunning && gameState.isRunning) _startTimer();
+    if (_isRunning && !gameState.isRunning) _stopTimer();
     setState(() {
-      _state = newState["board"];
-      _flagsToSet = newState["flags"];
+      _state = gameState.matrix;
+      _flagsToSet = gameState.availableFlags;
     });
   }
 
@@ -104,16 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _stopTimer();
     }
     _resetTimer();
-    Map newState = await platform.invokeMethod("start", {
-      "rows": rows,
-      "columns": columns,
-      "bombs": bombs
-    });
-    if (!_isRunning && newState["running"]) _startTimer();
-    if (_isRunning && !newState["running"]) _stopTimer();
+    GameState gameState = await engine.newGame(rows, columns, bombs);
+    if (!_isRunning && gameState.isRunning) _startTimer();
+    if (_isRunning && !gameState.isRunning) _stopTimer();
     setState(() {
-      _state = newState["board"];
-      _flagsToSet = newState["flags"];
+      _state = gameState.matrix;
+      _flagsToSet = gameState.availableFlags;
     });
   }
 
@@ -159,8 +154,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       .of(context)
                       .size
                       .width,
-                  onClick: _openField,
-                  onLongClick: _flagField,
+                  onLongClick: _openField,
+                  onClick: _flagField,
                 ),
               ),
               2
