@@ -35,7 +35,7 @@ typedef Future<GameState> Action();
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final NativeEngine engine = new NativeEngine();
+  final Engine engine = new Engine.native();
 
   List<List<int>> _state = [];
   int _flagsToSet = 0;
