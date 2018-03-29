@@ -74,36 +74,24 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isRunning = false;
   Timer timer;
 
-  Future<Null> _openField(int row, int column) async {
-    print("open-start: " + new DateTime.now().toString());
-    GameState gameState = await engine.openField(row, column);
-    print("open-receive: " + new DateTime.now().toString());
-    if (!_isRunning && gameState.isRunning) _startTimer();
-    if (_isRunning && !gameState.isRunning) _stopTimer();
-    setState(() {
-      _state = gameState.matrix;
-      _flagsToSet = gameState.availableFlags;
-    });
+  _openField(int row, int column) async {
+    _updateState(() => engine.openField(row, column));
   }
 
-  Future<Null> _flagField(int row, int column) async {
-    print("flag-start: " + new DateTime.now().toString());
-    GameState gameState = await engine.flagField(row, column);
-    print("flag-receive: " + new DateTime.now().toString());
-    if (!_isRunning && gameState.isRunning) _startTimer();
-    if (_isRunning && !gameState.isRunning) _stopTimer();
-    setState(() {
-      _state = gameState.matrix;
-      _flagsToSet = gameState.availableFlags;
-    });
+  _flagField(int row, int column) async {
+    _updateState(() => engine.flagField(row, column));
   }
 
-  Future<Null> _newGame(int rows, int columns, int bombs) async {
+  _newGame(int rows, int columns, int bombs) async {
     if (_isRunning) {
       _stopTimer();
     }
     _resetTimer();
-    GameState gameState = await engine.newGame(rows, columns, bombs);
+    _updateState(() => engine.newGame(rows, columns, bombs));
+  }
+
+  void _updateState(Action action) async {
+    GameState gameState = await action();
     if (!_isRunning && gameState.isRunning) _startTimer();
     if (_isRunning && !gameState.isRunning) _stopTimer();
     setState(() {
