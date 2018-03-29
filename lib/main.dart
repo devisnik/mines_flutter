@@ -7,10 +7,10 @@ import 'counter.dart';
 import 'model.dart';
 
 void main() {
-  runApp(new MyApp());
+  runApp(new MinesApp());
 }
 
-class MyApp extends StatelessWidget {
+class MinesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -19,42 +19,42 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           brightness: Brightness.light,
           canvasColor: Colors.white),
-      home: new MyHomePage(title: 'Mines'),
+      home: new GamePage(title: 'Mines'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class GamePage extends StatefulWidget {
+  GamePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _GamePageState createState() => new _GamePageState();
 }
 
 typedef Future<GameState> Action();
 
-class _MyHomePageState extends State<MyHomePage> {
-  final Engine engine = new Engine.native();
+class _GamePageState extends State<GamePage> {
+  final Engine _engine = new Engine.native();
 
   List<List<int>> _state = [];
   int _flagsToSet = 0;
   int _seconds = 0;
   bool _isRunning = false;
-  Timer timer;
+  Timer _timer;
 
-  _MyHomePageState() {
+  _GamePageState() {
     _newGame(13, 10, 15);
   }
 
   void _startTimer() {
-    timer = new Timer.periodic(new Duration(seconds: 1), _incTimer);
+    _timer = new Timer.periodic(new Duration(seconds: 1), _incTimer);
     _isRunning = true;
   }
 
   void _stopTimer() {
-    timer.cancel();
+    _timer.cancel();
     _isRunning = false;
   }
 
@@ -71,11 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _longClick(int row, int column) async {
-    _updateState(() => engine.longClick(row, column));
+    _updateState(() => _engine.longClick(row, column));
   }
 
   void _click(int row, int column) async {
-    _updateState(() => engine.click(row, column));
+    _updateState(() => _engine.click(row, column));
   }
 
   void _newGame(int rows, int columns, int bombs) async {
@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _stopTimer();
     }
     _resetClock();
-    _updateState(() => engine.newGame(rows, columns, bombs));
+    _updateState(() => _engine.newGame(rows, columns, bombs));
   }
 
   void _updateState(Action action) async {
