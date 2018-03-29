@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class Tile extends StatelessWidget {
+class _Tile extends StatelessWidget {
   final int id;
   final double size;
   final VoidCallback onClick;
   final VoidCallback onLongClick;
 
-  const Tile({Key key, this.id, this.size, this.onClick, this.onLongClick})
+  const _Tile({Key key, this.id, this.size, this.onClick, this.onLongClick})
       : super(key: key);
 
   @override
@@ -25,13 +25,14 @@ class Tile extends StatelessWidget {
 
 typedef void ColumnCallback(int);
 
-class TileRow extends StatelessWidget {
+class _TileRow extends StatelessWidget {
   final List<int> ids;
   final double width;
   final ColumnCallback onClick;
   final ColumnCallback onLongClick;
 
-  const TileRow({Key key, this.ids, this.width, this.onClick, this.onLongClick})
+  const _TileRow(
+      {Key key, this.ids, this.width, this.onClick, this.onLongClick})
       : super(key: key);
 
   @override
@@ -41,7 +42,7 @@ class TileRow extends StatelessWidget {
             .asMap()
             .map((index, id) => new MapEntry(
                 index,
-                new Tile(
+                new _Tile(
                   id: id,
                   size: width / ids.length,
                   onClick: () => onClick(index),
@@ -69,7 +70,7 @@ class Board extends StatelessWidget {
             .asMap()
             .map((rowIndex, values) => new MapEntry(
                 rowIndex,
-                new TileRow(
+                new _TileRow(
                   ids: values,
                   width: size,
                   onClick: (columnIndex) => onClick(rowIndex, columnIndex),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'board.dart';
+import 'counter.dart';
 import 'model.dart';
 
 void main() {
@@ -138,51 +139,6 @@ class _MyHomePageState extends State<MyHomePage> {
               2)
         ],
       ),
-    );
-  }
-}
-
-class Digit extends StatelessWidget {
-  const Digit({Key key, this.value, this.size}) : super(key: key);
-
-  final int value;
-  final Size size;
-
-  @override
-  Widget build(BuildContext context) {
-    return new Image.asset(
-      'assets/images/counter_$value.gif',
-      fit: BoxFit.fill,
-      width: size.width,
-      height: size.height,
-      gaplessPlayback: true,
-    );
-  }
-}
-
-class Counter extends StatelessWidget {
-  const Counter({Key key, this.value}) : super(key: key);
-
-  final int value;
-
-  @override
-  Widget build(BuildContext context) {
-    var size = new Size(20.0, 35.0);
-    return new Row(
-      children: <Widget>[
-        new Digit(
-          value: (value / 100).floor() % 10,
-          size: size,
-        ),
-        new Digit(
-          value: (value / 10).floor() % 10,
-          size: size,
-        ),
-        new Digit(
-          value: value % 10,
-          size: size,
-        ),
-      ],
     );
   }
 }
