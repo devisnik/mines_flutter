@@ -59,11 +59,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incTimer(Timer timer) {
     setState(() {
-      _seconds++;
+      _seconds = timer.tick;
     });
   }
 
-  void _resetTimer() {
+  void _resetClock() {
     setState(() {
       _seconds = 0;
     });
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_isRunning) {
       _stopTimer();
     }
-    _resetTimer();
+    _resetClock();
     _updateState(() => engine.newGame(rows, columns, bombs));
   }
 
