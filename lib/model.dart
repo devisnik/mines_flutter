@@ -3,16 +3,14 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class GameState {
-
-  final List<List<int>> matrix;
+  final List<List<int>> board;
   final int availableFlags;
   final bool isRunning;
 
-  const GameState(this.matrix, this.availableFlags, this.isRunning);
+  const GameState(this.board, this.availableFlags, this.isRunning);
 }
 
 abstract class Engine {
-
   factory Engine.native() => new _NativeEngine();
   factory Engine.fake() => new _FakeEngine();
 
@@ -22,62 +20,39 @@ abstract class Engine {
 }
 
 class _NativeEngine implements Engine {
-
   static const platform = const MethodChannel('devisnik.de/mines');
 
   @override
-  Future<GameState> newGame(int rows, int columns, int bombs) {
-    return platform.invokeMethod("start", {
-      "rows": rows,
-      "columns": columns,
-      "bombs": bombs
-    }).then((map) => new GameState(map["board"], map["flags"], map["running"]));
-  }
+  Future<GameState> newGame(int rows, int columns, int bombs) =>
+      platform.invokeMethod("start",
+          {"rows": rows, "columns": columns, "bombs": bombs}).then(_toState);
 
   @override
-  Future<GameState> click(int row, int column) {
-    return platform.invokeMethod("click", {
-      "row": row,
-      "column": column
-    }).then((map) => new GameState(map["board"], map["flags"], map["running"]));
-  }
+  Future<GameState> click(int row, int column) => platform
+      .invokeMethod("click", {"row": row, "column": column}).then(_toState);
 
   @override
-  Future<GameState> longClick(int row, int column) {
-    return platform.invokeMethod("longclick", {
-      "row": row,
-      "column": column
-    }).then((map) => new GameState(map["board"], map["flags"], map["running"]));
-  }
+  Future<GameState> longClick(int row, int column) => platform
+      .invokeMethod("longclick", {"row": row, "column": column}).then(_toState);
+
+  _toState(Map map) =>
+      new GameState(map["board"], map["flags"], map["running"]);
 }
 
 class _FakeEngine implements Engine {
-
   List<List<int>> _board;
-  @override
-  Future<GameState> click(int row, int column) {
-    return new Future(() {
-      _board[row][column] = _board[row][column] == 10 ? 0 : 10;
-    }).then((whatever) => new GameState(_board, 10, true));
-  }
 
   @override
-  Future<GameState> longClick(int row, int column) {
-    return click(row, column);
-  }
+  Future<GameState> click(int row, int column) => new Future(() {
+        _board[row][column] = _board[row][column] == 10 ? 0 : 10;
+      }).then((whatever) => new GameState(_board, 10, true));
 
   @override
-  Future<GameState> newGame(int rows, int columns, int bombs) {
-    return new Future(() {
-      _board = new List<List<int>>(rows);
-      for (var i = 0; i < rows; i++) {
-        List<int> list = new List<int>(columns);
-        for (var j = 0; j < columns; j++) {
-          list[j] = 10;
-        }
-        _board[i] = list;
-      }
-    }).then((whatever) => new GameState(_board, 10, false));
-  }
+  Future<GameState> longClick(int row, int column) => click(row, column);
 
+  @override
+  Future<GameState> newGame(int rows, int columns, int bombs) => new Future(() {
+        _board = new List<List<int>>.generate(
+            rows, (_) => new List<int>.filled(columns, 10));
+      }).then((_) => new GameState(_board, 10, false));
 }

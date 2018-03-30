@@ -73,7 +73,7 @@ class _GamePageState extends State<GamePage> {
     if (!_isRunning && gameState.isRunning) _startTimer();
     if (_isRunning && !gameState.isRunning) _stopTimer();
     setState(() {
-      _state = gameState.matrix;
+      _state = gameState.board;
       _flagsToSet = gameState.availableFlags;
     });
   }
