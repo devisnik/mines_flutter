@@ -12,9 +12,10 @@ class MinesApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Flutter Mines',
       theme: new ThemeData(
-          primarySwatch: Colors.red,
-          brightness: Brightness.light,
-          canvasColor: Colors.white),
+        primarySwatch: Colors.red,
+        brightness: Brightness.light,
+        canvasColor: Colors.white,
+      ),
       home: new GamePage(title: 'Mines'),
     );
   }

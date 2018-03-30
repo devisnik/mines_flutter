@@ -24,19 +24,31 @@ class _NativeEngine implements Engine {
 
   @override
   Future<GameState> newGame(int rows, int columns, int bombs) =>
-      platform.invokeMethod("start",
-          {"rows": rows, "columns": columns, "bombs": bombs}).then(_toState);
+      platform.invokeMethod("start", {
+        "rows": rows,
+        "columns": columns,
+        "bombs": bombs,
+      }).then(_toState);
 
   @override
-  Future<GameState> click(int row, int column) => platform
-      .invokeMethod("click", {"row": row, "column": column}).then(_toState);
+  Future<GameState> click(int row, int column) =>
+      platform.invokeMethod("click", {
+        "row": row,
+        "column": column,
+      }).then(_toState);
 
   @override
-  Future<GameState> longClick(int row, int column) => platform
-      .invokeMethod("longclick", {"row": row, "column": column}).then(_toState);
+  Future<GameState> longClick(int row, int column) =>
+      platform.invokeMethod("longclick", {
+        "row": row,
+        "column": column,
+      }).then(_toState);
 
-  _toState(Map map) =>
-      new GameState(map["board"], map["flags"], map["running"]);
+  _toState(Map map) => new GameState(
+        map["board"],
+        map["flags"],
+        map["running"],
+      );
 }
 
 class _FakeEngine implements Engine {
@@ -45,7 +57,7 @@ class _FakeEngine implements Engine {
   @override
   Future<GameState> click(int row, int column) => new Future(() {
         _board[row][column] = _board[row][column] == 10 ? 0 : 10;
-      }).then((whatever) => new GameState(_board, 10, true));
+      }).then((_) => new GameState(_board, 10, true));
 
   @override
   Future<GameState> longClick(int row, int column) => click(row, column);
@@ -53,6 +65,8 @@ class _FakeEngine implements Engine {
   @override
   Future<GameState> newGame(int rows, int columns, int bombs) => new Future(() {
         _board = new List<List<int>>.generate(
-            rows, (_) => new List<int>.filled(columns, 10));
+          rows,
+          (_) => new List<int>.filled(columns, 10),
+        );
       }).then((_) => new GameState(_board, 10, false));
 }

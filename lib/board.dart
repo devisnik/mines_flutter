@@ -11,14 +11,15 @@ class _Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
-        onTap: onClick,
-        onLongPress: onLongClick,
-        child: new Image.asset(
-          "assets/images/classic_image_${id < 10 ? "0$id" : "$id"}.png",
-          width: size,
-          height: size,
-          gaplessPlayback: true, //to avoid image flickering
-        ));
+      onTap: onClick,
+      onLongPress: onLongClick,
+      child: new Image.asset(
+        "assets/images/classic_image_${id < 10 ? "0$id" : "$id"}.png",
+        width: size,
+        height: size,
+        gaplessPlayback: true, //to avoid image flickering
+      ),
+    );
   }
 }
 
@@ -37,14 +38,17 @@ class _TileRow extends StatelessWidget {
     return new Row(
         children: ids
             .asMap()
-            .map((index, id) => new MapEntry(
-                index,
-                new _Tile(
-                  id: id,
-                  size: width / ids.length,
-                  onClick: () => onClick(index),
-                  onLongClick: () => onLongClick(index),
-                )))
+            .map(
+              (index, id) => new MapEntry(
+                    index,
+                    new _Tile(
+                      id: id,
+                      size: width / ids.length,
+                      onClick: () => onClick(index),
+                      onLongClick: () => onLongClick(index),
+                    ),
+                  ),
+            )
             .values
             .toList(growable: false));
   }
@@ -63,18 +67,22 @@ class Board extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Column(
-        children: ids
-            .asMap()
-            .map((rowIndex, values) => new MapEntry(
-                rowIndex,
-                new _TileRow(
-                  ids: values,
-                  width: size,
-                  onClick: (columnIndex) => onClick(rowIndex, columnIndex),
-                  onLongClick: (columnIndex) =>
-                      onLongClick(rowIndex, columnIndex),
-                )))
-            .values
-            .toList(growable: false));
+      children: ids
+          .asMap()
+          .map(
+            (rowIndex, values) => new MapEntry(
+                  rowIndex,
+                  new _TileRow(
+                    ids: values,
+                    width: size,
+                    onClick: (columnIndex) => onClick(rowIndex, columnIndex),
+                    onLongClick: (columnIndex) =>
+                        onLongClick(rowIndex, columnIndex),
+                  ),
+                ),
+          )
+          .values
+          .toList(growable: false),
+    );
   }
 }

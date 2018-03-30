@@ -85,10 +85,11 @@ class _GamePageState extends State<GamePage> {
         title: new Text(widget.title),
         actions: <Widget>[
           new IconButton(
-              icon: new Icon(Icons.add_circle),
-              onPressed: () {
-                _newGame(13, 10, 15);
-              })
+            icon: new Icon(Icons.add_circle),
+            onPressed: () {
+              _newGame(13, 10, 15);
+            },
+          )
         ],
       ),
       body: new Column(
@@ -98,27 +99,30 @@ class _GamePageState extends State<GamePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               new RepaintBoundary.wrap(
-                  new Counter(
-                    value: _flagsToSet,
-                  ),
-                  0),
+                new Counter(
+                  value: _flagsToSet,
+                ),
+                0,
+              ),
               new RepaintBoundary.wrap(
-                  new Counter(
-                    value: _seconds,
-                  ),
-                  1),
+                new Counter(
+                  value: _seconds,
+                ),
+                1,
+              ),
             ],
           ),
           new RepaintBoundary.wrap(
-              new Center(
-                child: new Board(
-                  ids: _state,
-                  size: MediaQuery.of(context).size.width,
-                  onLongClick: _longClick,
-                  onClick: _click,
-                ),
+            new Center(
+              child: new Board(
+                ids: _state,
+                size: MediaQuery.of(context).size.width,
+                onLongClick: _longClick,
+                onClick: _click,
               ),
-              2)
+            ),
+            2,
+          )
         ],
       ),
     );
