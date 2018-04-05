@@ -24,19 +24,22 @@ class _NativeEngine implements Engine {
 
   @override
   Future<GameState> newGame(int rows, int columns, int bombs) =>
-      platform.invokeMethod("start",
-          {"rows": rows, "columns": columns, "bombs": bombs}).then(_toState);
+      _invokeMethod("start",
+          {"rows": rows, "columns": columns, "bombs": bombs});
 
   @override
-  Future<GameState> click(int row, int column) => platform
-      .invokeMethod("click", {"row": row, "column": column}).then(_toState);
+  Future<GameState> click(int row, int column) =>
+      _invokeMethod("click", {"row": row, "column": column});
 
   @override
-  Future<GameState> longClick(int row, int column) => platform
-      .invokeMethod("longclick", {"row": row, "column": column}).then(_toState);
+  Future<GameState> longClick(int row, int column) =>
+      _invokeMethod("longclick", {"row": row, "column": column});
 
-  _toState(Map map) =>
-      new GameState(map["board"], map["flags"], map["running"]);
+  GameState _toState(Map map) => new GameState(
+      (map["board"] as List).retype(), map["flags"], map["running"]);
+
+  Future<GameState> _invokeMethod(String method, [dynamic arguments]) async =>
+      _toState(await platform.invokeMethod(method, arguments));
 }
 
 class _FakeEngine implements Engine {
