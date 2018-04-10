@@ -44,11 +44,11 @@ class _NativeEngine implements Engine {
         "column": column,
       });
 
-  _toState(Map map) => new GameState(
-    map["board"],
-    map["flags"],
-    map["running"],
-  );
+  GameState _toState(Map map) => new GameState(
+        (map["board"] as List).retype(),
+        map["flags"],
+        map["running"],
+      );
 
   Future<GameState> _invokeMethod(String method, [dynamic arguments]) async =>
       _toState(await platform.invokeMethod(method, arguments));
