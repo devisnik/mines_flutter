@@ -18,7 +18,7 @@ class GamePage extends StatefulWidget {
 typedef Future<GameState> Action();
 
 class _GamePageState extends State<GamePage> {
-  final Engine _engine = new Engine.native();
+  final Engine _engine = Engine.forPlatform();
 
   List<List<int>> _state = [];
   int _flagsToSet = 0;

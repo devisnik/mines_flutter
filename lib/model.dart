@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
@@ -11,11 +12,17 @@ class GameState {
 }
 
 abstract class Engine {
+  factory Engine.forPlatform() =>
+      Platform.isIOS ? new Engine.fake() : new Engine.native();
+
   factory Engine.native() => new _NativeEngine();
+
   factory Engine.fake() => new _FakeEngine();
 
   Future<GameState> newGame(int rows, int columns, int bombs);
+
   Future<GameState> click(int row, int column);
+
   Future<GameState> longClick(int row, int column);
 }
 
@@ -31,8 +38,7 @@ class _NativeEngine implements Engine {
       });
 
   @override
-  Future<GameState> click(int row, int column) =>
-      _invokeMethod("click", {
+  Future<GameState> click(int row, int column) => _invokeMethod("click", {
         "row": row,
         "column": column,
       });
